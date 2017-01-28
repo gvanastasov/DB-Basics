@@ -75,18 +75,123 @@ ORDER BY [Salary] DESC
 		,[LastName] DESC
 		,[MiddleName]
 
--- 16. Create View Employees with Salaries
-GO
+-- 16. Create View Employess With Salaries
+
 CREATE VIEW V_EmployeesSalaries AS
+	 SELECT [FirstName], [LastName], [Salary] FROM Employees
+GO
+SELECT * FROM V_EmployeesSalaries
+
+-- 17. Create View Employees with Job Titles
+GO
+CREATE VIEW V_EmployeeNameJobTitle AS
      SELECT [FirstName] + ' '
 	      + ISNULL([MiddleName],'') + ' ' 
 		  + [LastName] AS [Full Name]
 
 		  , [JobTitle] FROM Employees
 GO
-SELECT * FROM V_EmployeesSalaries
+SELECT * FROM V_EmployeeNameJobTitle 
+DROP VIEW V_EmployeeNameJobTitle 
 
-DROP VIEW V_EmployeesSalaries
+-- 18. Distinct Job Titles
+
+SELECT DISTINCT [JobTitle] FROM Employees
+
+-- 19. Find First 10 Started Projects
+
+SELECT TOP (10) * FROM Projects
+		ORDER BY [StartDate] ASC,
+		         [Name]
+
+--20. Last 7 Hired Employees
+
+SELECT TOP (7) [FirstName], [LastName], [HireDate] FROM Employees
+	ORDER BY [HireDate] DESC
+
+
+-- 21. Increase Salaries
+
+BACKUP DATABASE SoftUni
+TO DISK = 'C:\Users\Georgi\Documents\Softuni\05 DB Basics\DB_Backups\SoftUni_ex2_CRUD.Bak'
+	WITH FORMAT,
+		MEDIANAME = 'DB_Backups',
+		NAME = 'Full Backup of SoftUni';
+
+USE master
+GO
+ALTER DATABASE SoftUni
+SET SINGLE_USER
+--This rolls back all uncommitted transactions in the db.
+WITH ROLLBACK IMMEDIATE
+GO
+RESTORE DATABASE SoftUni
+FROM DISK = 'C:\Users\Georgi\Documents\Softuni\05 DB Basics\DB_Backups\SoftUni_ex2_CRUD.Bak'
+GO
+
+USE SoftUni
+GO
+UPDATE Employees
+   SET Salary = Salary + Salary * 12 / 100
+ WHERE [DepartmentId] IN 
+						(
+							SELECT [DepartmentId] 
+							  FROM [Departments]
+							 WHERE [Name] IN 
+											('Engineering'
+											,'Tool Design'
+											,'Marketing'
+											,'Information Services')
+						)
+
+GO
+						
+SELECT [Salary] 
+  FROM [Employees]
+
+-- 22. All Mountain Peaks
+
+USE Geography
+GO
+
+  SELECT [PeakName] FROM Peaks
+ORDER BY [PeakName]
+
+-- 23. Biggest Countries by Population
+
+SELECT TOP (30) [CountryName], [Population] FROM Countries
+WHERE [ContinentCode] IN (
+							SELECT [ContinentCode] FROM Continents
+							 WHERE [ContinentName] = 'Europe'
+						)
+ORDER BY [Population] DESC, [CountryName] ASC
+
+
+-- 24. Countries and Currency (Euro / Not Euro)
+
+SELECT [CountryName]
+	  ,[CountryCode]
+	  ,CASE [CurrencyCode]
+			WHEN 'EUR' THEN 'Euro'
+			ELSE 'Not Euro' 
+	   END as [Currency]
+FROM Countries
+ORDER BY [CountryName]
+
+
+-- 25. All Diablo Characters
+
+Use Diablo
+GO
+
+SELECT [Name] FROM Characters
+ORDER BY [Name]
+
+
+
+
+
+
 
 
 
