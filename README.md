@@ -10,7 +10,7 @@ Contains homeworks and other stuff, for the course title. Aims at learning to cr
 - [x] Exercise 0: Basic operations
 - [x] Data def. and Datatypes, Exercise 1
 - [x] Basic CRUD, Exercise 2
-- [ ] Build-in functions, Exercise 3
+- [x] Build-in functions, Exercise 3
 - [ ] Data Aggregation, Exercise 4
 - [ ] Table Relations, Exercise 5
 - [ ] Subqueries and joins, Exercise 6
