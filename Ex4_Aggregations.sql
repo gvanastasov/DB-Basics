@@ -16,8 +16,16 @@ SELECT [DepositGroup],
 GROUP BY [DepositGroup]
 ORDER BY [LongestMagicWand]
 
+-- 4. Smallest Depost Group per Magic Wand Size
 
-
+SELECT [DepositGroup] FROM WizzardDeposits
+GROUP BY [DepositGroup]
+HAVING AVG([MagicWandSize]) = (
+								SELECT 
+									TOP(1) AVG([MagicWandSize]) as [ave]
+								FROM WizzardDeposits
+								GROUP BY [DepositGroup]
+								ORDER BY [ave])
 
 
 
