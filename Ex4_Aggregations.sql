@@ -55,6 +55,15 @@ GROUP BY [DepositGroup]
   HAVING SUM([DepositAmount]) < 150000
 ORDER BY [TotalSum] DESC
 
+-- 8. Deposit Charge
+
+SELECT [DepositGroup],
+	   [MagicWandCreator],
+	   MIN([DepositCharge]) as [MinDepositCharge]
+FROM WizzardDeposits
+GROUP BY [DepositGroup], [MagicWandCreator]
+ORDER BY [MagicWandCreator], [DepositGroup]
+
 
 
 
