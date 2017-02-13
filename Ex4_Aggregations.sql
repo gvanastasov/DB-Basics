@@ -64,6 +64,24 @@ FROM WizzardDeposits
 GROUP BY [DepositGroup], [MagicWandCreator]
 ORDER BY [MagicWandCreator], [DepositGroup]
 
+-- 9. Age Groups
+
+SELECT	grp.age_group as [AgeGroup], 
+		Count(grp.Id) as [WizardCount]
+  FROM (
+		SELECT case 
+					when [Age] BETWEEN 0 AND 10 then '[0-10]'
+					when [Age] BETWEEN 11 AND 20 then '[11-20]'
+					when [Age] BETWEEN 21 AND 30 then '[21-30]'
+					when [Age] BETWEEN 31 AND 40 then '[31-40]'
+					when [Age] BETWEEN 41 AND 50 then '[41-50]'
+					when [Age] BETWEEN 51 AND 60 then '[51-60]'
+					else '[61+]'
+					end as age_group,
+				Id FROM WizzardDeposits
+		) as grp
+GROUP BY grp.age_group
+
 
 
 
