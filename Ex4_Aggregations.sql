@@ -14,7 +14,6 @@ SELECT MAX([MagicWandSize]) as [LongestMagicWand] FROM WizzardDeposits
 SELECT [DepositGroup],
 	   MAX([MagicWandSize]) as [LongestMagicWand] FROM WizzardDeposits
 GROUP BY [DepositGroup]
-ORDER BY [LongestMagicWand]
 
 -- 4. Smallest Depost Group per Magic Wand Size
 
@@ -100,6 +99,15 @@ ORDER BY [FirstLetter]
 GROUP BY [DepositGroup], [IsDepositExpired]
 ORDER BY [DepositGroup] desc, [IsDepositExpired] asc
 
+-- 12.Rich Wizard, poor wizard
+
+SELECT CONVERT(decimal(18,2), SUM(df.[difference])) 
+FROM (
+	SELECT [DepositAmount] - (SELECT DepositAmount 
+								FROM WizzardDeposits 
+							   WHERE [Id] = hdb.[Id] + 1) as [difference]
+	 FROM WizzardDeposits as hdb
+) as df
 
 
 
