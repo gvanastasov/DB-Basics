@@ -27,7 +27,22 @@ HAVING AVG([MagicWandSize]) = (
 								GROUP BY [DepositGroup]
 								ORDER BY [ave])
 
+-- 5. Deposits Sum
 
+SELECT [DepositGroup],
+	   SUM([DepositAmount])
+FROM WizzardDeposits
+GROUP BY [DepositGroup]
+
+
+-- 6. Deposits Sum for ollivander family
+
+  SELECT [DepositGroup], 
+	     SUM([DepositAmount]) AS [TotalSum] 
+
+    FROM WizzardDeposits
+   WHERE [MagicWandCreator] = 'Ollivander family'
+GROUP BY [DepositGroup]
 
 
 
