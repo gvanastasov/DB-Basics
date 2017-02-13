@@ -109,12 +109,26 @@ FROM (
 	 FROM WizzardDeposits as hdb
 ) as df
 
+-- 13.Department TOtal Salaries
+
+USE SoftUni
+GO
+
+SELECT [DepartmentID], 
+		SUM([Salary]) AS [TotalSalary]
+FROM Employees
+GROUP BY [DepartmentID]
+ORDER BY [DepartmentID]
 
 
+-- 14. Employees Minimum Salaries
 
-
-
-
+SELECT [DepartmentID],
+		MIN([Salary])
+FROM Employees
+WHERE [HireDate] >= CAST('01/01/2000' AS datetime)
+GROUP BY [DepartmentID]
+HAVING [DepartmentID] in (2,5,7)
 
 
 
