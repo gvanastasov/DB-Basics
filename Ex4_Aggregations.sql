@@ -89,9 +89,16 @@ WHERE [DepositGroup] = 'Troll Chest'
 GROUP BY LEFT([FirstName], 1)
 ORDER BY [FirstLetter]
 
+-- 11.Average Interest
 
+  SELECT [DepositGroup],
+	     [IsDepositExpired],
+	     AVG([DepositInterest])
+    FROM WizzardDeposits
 
-
+   WHERE [DepositStartDate] >= CAST('01/01/1985' AS datetime)
+GROUP BY [DepositGroup], [IsDepositExpired]
+ORDER BY [DepositGroup] desc, [IsDepositExpired] asc
 
 
 
