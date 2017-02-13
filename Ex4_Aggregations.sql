@@ -9,6 +9,14 @@ SELECT Count([Id]) as [Count] FROM WizzardDeposits
 
 SELECT MAX([MagicWandSize]) as [LongestMagicWand] FROM WizzardDeposits
 
+-- 3. Longest Magic Wand per Deposit Groups
+
+SELECT [DepositGroup],
+	   MAX([MagicWandSize]) as [LongestMagicWand] FROM WizzardDeposits
+GROUP BY [DepositGroup]
+ORDER BY [LongestMagicWand]
+
+
 
 
 
