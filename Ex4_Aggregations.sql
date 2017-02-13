@@ -82,6 +82,24 @@ SELECT	grp.age_group as [AgeGroup],
 		) as grp
 GROUP BY grp.age_group
 
+-- 10.First Letter
+
+SELECT LEFT([FirstName], 1) as [FirstLetter] FROM WizzardDeposits
+WHERE [DepositGroup] = 'Troll Chest'
+GROUP BY LEFT([FirstName], 1)
+ORDER BY [FirstLetter]
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
