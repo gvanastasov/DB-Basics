@@ -131,6 +131,44 @@ GROUP BY [DepartmentID]
 HAVING [DepartmentID] in (2,5,7)
 
 
+-- 15. Employees aaverage salaries
+
+SELECT * INTO [EmployeesAS] FROM Employees
+WHERE Employees.[Salary] >= 30000
+
+DELETE FROM EmployeesAS
+WHERE [ManagerID] = 42
+
+UPDATE EmployeesAS
+SET [Salary] += 5000
+WHERE [DepartmentID] = 1
+
+SELECT [DepartmentID],
+	AVG([Salary]) as [AverageSalary]
+FROM EmployeesAS
+GROUP BY [DepartmentID]
+
+-- 16. Employees Maximum Salaries
+
+SELECT [DepartmentID],
+	MAX([Salary]) as [MaxSalary]
+FROM Employees
+GROUP BY [DepartmentID]
+HAVING MAX([Salary]) NOT BETWEEN 30000 AND 70000
+
+
+-- 17. Employees Count Salaries
+
+
+
+
+
+
+
+
+
+
+
 
 
 
