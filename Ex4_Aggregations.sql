@@ -159,6 +159,9 @@ HAVING MAX([Salary]) NOT BETWEEN 30000 AND 70000
 
 -- 17. Employees Count Salaries
 
+SELECT Count(EmployeeID) AS [Count] FROM Employees
+WHERE [ManagerID] IS NULL
+GROUP BY [ManagerID]
 
 
 
