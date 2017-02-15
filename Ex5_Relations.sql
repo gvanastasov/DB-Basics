@@ -44,6 +44,37 @@ REFERENCES Passports([PassportID])
 
 -- 02. One-To-Many Relationship
 
+create table Models
+(
+	[ModelID] int primary key identity(101,1),
+	[Name] nvarchar(50) not null,
+	[ManufacturerID] int not null
+)
+
+create table Manufacturers
+(
+	[ManufacturerID] int primary key identity(1,1),
+	[Name] nvarchar(50) not null,
+	[EstablishedOn] date not null
+)
+
+insert into Models([Name], [ManufacturerID]) VALUES
+('X1', 1),
+('i6', 1),
+('Model S', 2),
+('Model X', 2),
+('Model 3', 2),
+('Nova', 3)
+
+insert into Manufacturers ([Name], [EstablishedOn]) VALUES
+('BMW', CONVERT(date, '07/03/1916')),
+('Tesla', CONVERT(date, '01/01/2003')),
+('Lada', CONVERT(date, '01/05/1966'))
+
+ALTER TABLE Models
+ADD CONSTRAINT FK_Model_Manufacturer
+FOREIGN KEY ([ManufacturerID])
+REFERENCES Manufacturers([ManufacturerID])
 
 
 
