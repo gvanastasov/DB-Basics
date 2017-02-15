@@ -101,6 +101,7 @@ ORDER BY [DepositGroup] desc, [IsDepositExpired] asc
 
 -- 12.Rich Wizard, poor wizard
 
+-- subquery solution
 SELECT CONVERT(decimal(18,2), SUM(df.[difference])) 
 FROM (
 	SELECT [DepositAmount] - (SELECT DepositAmount 
@@ -109,6 +110,7 @@ FROM (
 	 FROM WizzardDeposits as hdb
 ) as df
 
+-- cursor solution
 DECLARE @prev DECIMAL(8,2)
 DECLARE @curr DECIMAL(8,2)
 DECLARE @total DECIMAL(8,2) = 0
@@ -132,6 +134,17 @@ CLOSE wizardCursor
 DEALLOCATE wizardCursor
 
 SELECT @total AS [TOTAL]
+
+-- lead/lag solution
+SELECT SUM([Difference]) as [Total] FROM
+(
+	SELECT [FirstName],
+		   [DepositAmount],
+		   LEAD([FirstName]) OVER (ORDER BY[Id]) AS [GuestWizard],
+		   LEAD([DepositAmount]) OVER (ORDER BY[Id]) AS [GuestDeposit],
+		   [DepositAmount] - LEAD([DepositAmount]) OVER (ORDER BY[Id]) AS [Difference]
+	FROM WizzardDeposits
+) as WizzardGame
 
 -- 13.Department TOtal Salaries
 
@@ -189,14 +202,29 @@ GROUP BY [ManagerID]
 
 -- 18. 3rd Highest Salary
 
-SELECT [DepartmentID], 
-						(SELECT MIN([Salary]) 
-							 FROM Employees as top3
-							 WHERE top3.[DepartmentID] = trd.[DepartmentID]
-							 GROUP BY top3.[DepartmentID]
-						) as [ThirdHighestSalary]
-				 FROM Employees as trd
-				 GROUP BY trd.[DepartmentID]
+USE SoftUni
+
+-- select solution
+SELECT * FROM 
+	(SELECT [DepartmentID], 
+			(SELECT MIN([Salary]) FROM
+				(SELECT DISTINCT TOP (3) [DepartmentID], [Salary] 
+								FROM Employees 
+							   WHERE [DepartmentID] = emps.[DepartmentID]
+							ORDER BY [Salary] desc
+				 ) as Top3
+			GROUP BY [DepartmentID]
+			HAVING COUNT([Salary]) >= 3
+			) AS [ThirdTop]
+	FROM Employees as emps
+	GROUP BY emps.[DepartmentID]
+	) AS Tops
+WHERE [ThirdTop] IS NOT NULL
+
+-- rank solution
+
+
+
 
 
 
