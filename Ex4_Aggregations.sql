@@ -222,11 +222,26 @@ SELECT * FROM
 WHERE [ThirdTop] IS NOT NULL
 
 -- rank solution
+SELECT [DepartmentID], [Salary] FROM
+(
+	SELECT 
+	[DepartmentID],
+	[Salary], 
+	DENSE_RANK() 
+		OVER (PARTITION BY [DepartmentID] 
+		      ORDER BY [Salary] desc) as [Rank]
+	FROM Employees
+	GROUP BY [DepartmentID],[Salary]
+) as ThirdTop
+WHERE [Rank] = 3
 
+-- 19. Salary Challenge
 
-
-
-
+SELECT TOP 10 [FirstName], [LastName], [DepartmentID] FROM Employees as main
+WHERE [Salary] > 
+	      (SELECT AVG([Salary]) as [AvgSalary] FROM Employees
+           GROUP BY [DepartmentID]
+		   HAVING [DepartmentID] = main.[DepartmentID])
 
 
 
