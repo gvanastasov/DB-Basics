@@ -109,6 +109,30 @@ FROM (
 	 FROM WizzardDeposits as hdb
 ) as df
 
+DECLARE @prev DECIMAL(8,2)
+DECLARE @curr DECIMAL(8,2)
+DECLARE @total DECIMAL(8,2) = 0
+
+DECLARE wizardCursor 
+ CURSOR	FOR 
+     SELECT [DepositAmount] FROM WizzardDeposits
+
+OPEN wizardCursor
+FETCH NEXT FROM wizardCursor INTO @curr
+
+WHILE (@@FETCH_STATUS = 0)
+	BEGIN
+		IF(@prev IS NOT NULL) 
+			BEGIN SET @total += (@prev - @curr) END
+		SET @prev = @curr
+		FETCH NEXT FROM wizardCursor INTO @curr
+	END
+
+CLOSE wizardCursor
+DEALLOCATE wizardCursor
+
+SELECT @total AS [TOTAL]
+
 -- 13.Department TOtal Salaries
 
 USE SoftUni
@@ -163,8 +187,16 @@ SELECT Count(EmployeeID) AS [Count] FROM Employees
 WHERE [ManagerID] IS NULL
 GROUP BY [ManagerID]
 
+-- 18. 3rd Highest Salary
 
-
+SELECT [DepartmentID], 
+						(SELECT MIN([Salary]) 
+							 FROM Employees as top3
+							 WHERE top3.[DepartmentID] = trd.[DepartmentID]
+							 GROUP BY top3.[DepartmentID]
+						) as [ThirdHighestSalary]
+				 FROM Employees as trd
+				 GROUP BY trd.[DepartmentID]
 
 
 
