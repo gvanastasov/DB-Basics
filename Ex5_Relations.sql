@@ -228,7 +228,8 @@ create table Agenda
 
 -- 09. Peaks in Rila
 
-
+USE Geography
+GO
 
 
 
