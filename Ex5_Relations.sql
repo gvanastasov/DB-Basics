@@ -183,6 +183,55 @@ create table OrderItems
 )
 
 
+-- 06. University Database
+
+CREATE DATABASE University
+GO
+
+USE University
+GO
+
+create table Majors
+(
+	[MajorID] int primary key,
+	[Name] nvarchar(50) not null
+)
+
+create table Students
+(
+	[StudentID] int primary key,
+	[StudentNumber] nvarchar(50) not null,
+	[StudentName] nvarchar(100) not null,
+	[MajorID] int not null foreign key references Majors([MajorID])
+)
+
+create table Payments
+(
+	[PaymentID] int primary key,
+	[PaymentDate] date not null,
+	[PaymentAmount] money not null,
+	[StudentID] int not null foreign key references Students([StudentID])
+)
+
+create table Subjects
+(
+	[SubjectID] int primary key,
+	[SubjectName] nvarchar(50) not null
+)
+
+create table Agenda
+(
+	[StudentID] int not null foreign key references Students([StudentID]),
+	[SubjectID] int not null foreign key references Subjects([SubjectID]),
+	constraint PK_Student_Subject primary key ([StudentID], [SubjectID])
+)
+
+-- 09. Peaks in Rila
+
+
+
+
+
 
 
 
