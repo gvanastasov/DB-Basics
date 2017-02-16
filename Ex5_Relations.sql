@@ -110,6 +110,85 @@ insert into StudentsExams values
 (2,102),(2,103)
 
 
+-- 04. Self-Referencing
+
+create table Teachers
+(
+	[TeacherID] int primary key identity(101,1),
+	[Name] nvarchar(50) not null,
+	[ManagerID] int null
+)
+
+insert into Teachers values
+('John', NULL),
+('Maya', 106),
+('Silvia', 106),
+('Ted', 105),
+('Mark', 101),
+('Greta', 101)
+
+alter table Teachers
+add constraint SR_Teacher_Manager
+foreign key ([ManagerID])
+references Teachers([TeacherID])
+
+-- 05. Online Store Database
+
+CREATE DATABASE OnlineStore
+GO
+USE OnlineStore
+GO
+
+USE master
+DROP Database OnlineStore
+
+create table Cities
+(
+	[CityID] int primary key,
+	[Name] nvarchar(50) not null
+)
+
+create table Customers
+(
+	[CustomerID] int primary key,
+	[Name] nvarchar(50) not null,
+	[Birthday] date not null,
+	[CityID] int not null foreign key references Cities([CityID])
+)
+
+create table Orders
+(
+	[OrderID] int primary key,
+	[CustomerID] int not null foreign key references Customers([CustomerID])
+)
+
+create table ItemTypes
+(
+	[ItemTypeID] int primary key,
+	[Name] nvarchar(50) not null
+)
+
+create table Items
+(
+	[ItemID] int primary key,
+	[Name] nvarchar(50) not null,
+	[ItemTypeID] int not null foreign key references ItemTypes([ItemTypeID])
+)
+
+create table OrderItems
+(
+	[OrderID] int not null foreign key references Orders([OrderID]),
+	[ItemID] int not null foreign key references Items([ItemID]),
+	constraint PK_Order_Item primary key ([OrderID],[ItemID])
+)
+
+
+
+
+
+
+
+
 
 
 
