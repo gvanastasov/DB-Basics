@@ -161,7 +161,7 @@ order by c.[CountryName] asc
 
 -- 15. Continents and Currencies
 
--- grouping solution
+-- ranking solution
 select [ContinentCode], [CurrencyCode], [CurrencyUsage] from (
 	select ctr.[ContinentCode], 
 		   ctr.[CurrencyCode],
@@ -173,6 +173,21 @@ select [ContinentCode], [CurrencyCode], [CurrencyUsage] from (
 	group by ctr.[CurrencyCode], ctr.[ContinentCode]
 	having Count(ctr.[CurrencyCode]) > 1) as filtered
 where [UsageRank] = 1
+
+-- 16. Countries without any Mountains
+
+select Count(ctr.[CountryCode]) as [CountryCode]
+from Countries as ctr
+left join MountainsCountries as mc on ctr.[CountryCode] = mc.[CountryCode]
+group by mc.[MountainId]
+having mc.[MountainId] is null
+
+
+
+
+
+
+
 
 
 
