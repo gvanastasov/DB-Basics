@@ -117,8 +117,12 @@ join Departments as d on d.[DepartmentID] = e.[DepartmentID]
 order by e.[EmployeeID]
 
 
+-- 11. Min Average Salary
 
-
+select TOP(1) AVG([Salary]) as [MinAverageSalary]
+from Employees
+group by [DepartmentID]
+order by AVG([Salary]) asc
 
 
 
