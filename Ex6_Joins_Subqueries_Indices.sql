@@ -148,7 +148,15 @@ where c.[CountryName] in ('United States','Russia','Bulgaria')
 group by mc.[CountryCode]
 
 
--- 14.
+-- 14. Countries with rivers
+
+select top(5) c.[CountryName], r.[RiverName]
+from Countries as c
+join Continents as cnt on cnt.[ContinentCode] = c.[ContinentCode]
+left join CountriesRivers as cr on cr.[CountryCode] = c.[CountryCode]
+left join Rivers as r on r.[Id] = cr.[RiverId]
+where cnt.[ContinentName] = 'Africa'
+order by c.[CountryName] asc
 
 
 
