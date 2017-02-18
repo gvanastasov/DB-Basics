@@ -79,6 +79,18 @@ order by e.[EmployeeID] asc
 
 
 
+-- 08. Employee 24
+
+select e.[EmployeeID], 
+		 [FirstName], 
+		 case 
+		 when DATEDIFF(DAY, '2005/1/1', p.[StartDate]) > 0 then NULL
+		 else p.[Name]
+		 end as [ProjectName]
+from Employees as e
+inner join EmployeesProjects as ep on ep.[EmployeeID] = e.[EmployeeID]
+inner join Projects as p on p.[ProjectID] = ep.[ProjectID]
+where e.[EmployeeID] = 24
 
 
 
