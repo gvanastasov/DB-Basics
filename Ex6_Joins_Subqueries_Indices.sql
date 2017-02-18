@@ -138,12 +138,17 @@ where [Elevation] > 2835 AND mc.[CountryCode] = 'BG'
 order by [Elevation] desc
 
 
+-- 13. Count Mountain Ranges
+
+select mc.[CountryCode],
+		COUNT([MountainId]) as [MountainRanges]
+from MountainsCountries as mc
+join Countries as c on c.[CountryCode] = mc.[CountryCode] 
+where c.[CountryName] in ('United States','Russia','Bulgaria')
+group by mc.[CountryCode]
 
 
-
-
-
-
+-- 14.
 
 
 
