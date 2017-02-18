@@ -83,9 +83,41 @@ as
 go
 
 exec dbo.usp_EmployeesBySalaryLevel @salaryLevel='high'
-
+go
 
 -- 07. Define Function
+
+create function ufn_IsWordComprised(
+	@setOfLetters nvarchar(max), 
+	@word nvarchar(max))
+returns bit
+as
+	begin
+		declare @letter char;
+		while LEN(@word) > 0
+			begin
+			set @letter = LEFT(@word,1);
+			if CHARINDEX(@letter, @setOfLetters) = 0
+				return 0;
+			set @word = RIGHT(@word, LEN(@word) - 1);
+			end
+		return 1;
+	end
+
+go
+
+select [Name], dbo.ufn_IsWordComprised('tndeuklh',[Name]) from Towns
+go
+
+
+
+
+
+
+
+
+
+
 
 
 
