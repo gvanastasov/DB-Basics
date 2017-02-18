@@ -125,6 +125,25 @@ group by [DepartmentID]
 order by AVG([Salary]) asc
 
 
+-- 12. Highest peaks in Bulgaria
+
+USE Geography
+GO
+
+select [CountryCode], [MountainRange], [PeakName], [Elevation]
+from Peaks as p
+join Mountains as m on m.[Id] = p.[MountainId]
+join MountainsCountries as mc on mc.[MountainId] = p.[MountainId]
+where [Elevation] > 2835 AND mc.[CountryCode] = 'BG'
+order by [Elevation] desc
+
+
+
+
+
+
+
+
 
 
 
