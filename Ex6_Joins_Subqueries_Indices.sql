@@ -184,6 +184,34 @@ having mc.[MountainId] is null
 
 
 
+-- 17. Highest Peak and Longest River by Country
+
+select top(5) ctr.[CountryName], pks.[HighestPeakElevation], lrvs.[LongestRiverLength]
+from 
+	Countries as ctr
+
+	full outer join  (
+		select mc.[CountryCode], 
+			   MAX([Elevation]) as [HighestPeakElevation] 
+		from Peaks as hpks
+			 join  MountainsCountries as mc on hpks.[MountainId] = mc.[MountainId]
+		group by mc.[CountryCode]
+	) as pks on ctr.[CountryCode] = pks.[CountryCode]
+
+	full outer join  (
+		select cr.[CountryCode], 
+			   MAX(rvs.[Length]) as [LongestRiverLength] 
+		from Rivers as rvs
+			 join  CountriesRivers as cr on rvs.[Id] = cr.[RiverId]
+		group by cr.[CountryCode]
+	) as lrvs on ctr.[CountryCode] = lrvs.[CountryCode]
+
+order by [HighestPeakElevation] desc,
+         [LongestRiverLength] desc,
+		 [CountryName] asc
+
+
+
 
 
 
