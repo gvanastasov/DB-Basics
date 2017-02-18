@@ -51,9 +51,25 @@ as
 exec dbo.usp_GetEmployeesFromTown @townName = 'Sofia'
 go
 
---
+-- 05. Salary Level Function
 
+create function ufn_GetSalaryLevel (@salary money)
+returns nvarchar(max)
+as
+	begin
+		declare @level as nvarchar(max);
+		select @level = case
+			when @salary < 30000 then 'Low'
+			when @salary between 30000 and 50000 then 'Average'
+			else 'High'
+		end;
+		return @level;
+	end
+go
 
+select [Salary], 
+	   dbo.ufn_GetSalaryLevel([Salary]) as [Salary Level]
+  from Employees
 
 
 
