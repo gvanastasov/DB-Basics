@@ -22,8 +22,13 @@ JOIN Addresses as a ON e.[AddressID] = a.[AddressID]
 JOIN Towns as t ON a.[TownID] = t.[TownID]
 ORDER BY [FirstName] asc, [LastName] desc
 
+-- 03. Sales Employee
 
-
+select [EmployeeID], [FirstName], [LastName], d.[Name] as [DepartmentName]
+from Employees as e
+join Departments as d on d.[DepartmentID] = e.[DepartmentID]
+where d.[Name] = 'Sales'
+order by [EmployeeID] asc
 
 
 
