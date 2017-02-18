@@ -59,13 +59,23 @@ select [FirstName],
 		d.[Name] as [DeptName]
 from Employees as e
 inner join Departments as d on d.[DepartmentID] = e.[DepartmentID]
-where DATEDIFF(day, '1/1/1999', [HireDate]) > 0
+where DATEDIFF(day, CONVERT(smalldatetime,'1/1/1999', 103), [HireDate]) > 0
 	  and d.[Name] in ('Sales', 'Finance')
 order by e.[HireDate] asc
  
 
+-- 07. Employees with Project
+-- casting codes: msdn.microsoft.com/en-us/library/ms187928(v=sql.90).aspx
 
-
+select top(5) e.[EmployeeID], 
+				[FirstName], 
+				p.[Name] as [ProjectName]
+from Employees as e
+inner join EmployeesProjects as ep on ep.[EmployeeID] = e.[EmployeeID]
+inner join Projects as p on p.[ProjectID] = ep.[ProjectID]
+where DATEDIFF(day, CONVERT(smalldatetime,'13/08/2002', 103), p.[StartDate]) > 0
+      AND p.[EndDate] is null
+order by e.[EmployeeID] asc
 
 
 
