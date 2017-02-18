@@ -26,12 +26,23 @@ ORDER BY [FirstName] asc, [LastName] desc
 
 select [EmployeeID], [FirstName], [LastName], d.[Name] as [DepartmentName]
 from Employees as e
-join Departments as d on d.[DepartmentID] = e.[DepartmentID]
+inner join Departments as d on d.[DepartmentID] = e.[DepartmentID]
 where d.[Name] = 'Sales'
 order by [EmployeeID] asc
 
+-- 04. Employee Departments
+
+select TOP(5) [EmployeeID], 
+				[FirstName], 
+				[Salary], 
+				d.[Name] as [DepartmentName]
+from Employees as e
+inner join Departments as d on d.[DepartmentID] = e.[DepartmentID]
+where e.[Salary] > 15000
+order by e.[DepartmentID] asc
 
 
+-- 05. Employees without project
 
 
 
