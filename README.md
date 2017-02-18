@@ -11,8 +11,8 @@ Contains homeworks and other stuff, for the course title. Aims at learning to cr
 - [x] Data def. and Datatypes, Exercise 1
 - [x] Basic CRUD, Exercise 2
 - [x] Build-in functions, Exercise 3
-- [ ] Data Aggregation, Exercise 4
-- [ ] Table Relations, Exercise 5
-- [ ] Subqueries and joins, Exercise 6
+- [x] Data Aggregation, Exercise 4
+- [x] Table Relations, Exercise 5
+- [x] Subqueries and joins, Exercise 6
 - [ ] Functions, Triggers and Transactions. Exercise 7
 - [ ] Exam
