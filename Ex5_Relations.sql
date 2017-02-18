@@ -231,9 +231,14 @@ create table Agenda
 USE Geography
 GO
 
+SELECT * FROM Mountains
+SELECT * FROM Peaks
 
-
-
+SELECT [MountainRange], [PeakName], [Elevation] 
+FROM Peaks as p
+JOIN Mountains AS m ON p.[MountainId] = m.[Id]
+WHERE m.[MountainRange] = 'Rila'
+ORDER BY p.[Elevation] desc
 
 
 
