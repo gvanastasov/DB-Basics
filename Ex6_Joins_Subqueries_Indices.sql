@@ -20,7 +20,7 @@ select TOP(50) [FirstName],
 from Employees as e
 JOIN Addresses as a ON e.[AddressID] = a.[AddressID]
 JOIN Towns as t ON a.[TownID] = t.[TownID]
-ORDER BY [FirstName] asc, [LastName] desc
+ORDER BY [FirstName] asc, [LastName]
 
 -- 03. Sales Employee
 
@@ -44,7 +44,7 @@ order by e.[DepartmentID] asc
 
 -- 05. Employees without project
 
-select top(3) e.[EmployeeID], [FirstName], p.[ProjectID]
+select top(3) e.[EmployeeID], [FirstName]
 from Employees as e
 left join EmployeesProjects as p on p.[EmployeeID] = e.[EmployeeID]
 where p.ProjectID is null
@@ -84,13 +84,30 @@ order by e.[EmployeeID] asc
 select e.[EmployeeID], 
 		 [FirstName], 
 		 case 
-		 when DATEDIFF(DAY, '2005/1/1', p.[StartDate]) > 0 then NULL
-		 else p.[Name]
+			 when DATEPART(year, p.[StartDate]) >= 2005 then NULL
+			 else p.[Name]
 		 end as [ProjectName]
 from Employees as e
 inner join EmployeesProjects as ep on ep.[EmployeeID] = e.[EmployeeID]
 inner join Projects as p on p.[ProjectID] = ep.[ProjectID]
 where e.[EmployeeID] = 24
+
+
+-- 09. Employee Manager
+
+select e.[EmployeeID], 
+       e.[FirstName], 
+	   e.[ManagerID], m.[FirstName] as [ManagerName]
+from Employees as e
+right outer join Employees as m on m.[EmployeeID] = e.[ManagerID]
+where e.ManagerID in (3,7)
+order by e.[EmployeeID] asc
+
+
+
+
+
+
 
 
 
