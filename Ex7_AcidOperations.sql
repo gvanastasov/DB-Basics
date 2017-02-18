@@ -111,6 +111,43 @@ go
 
 
 
+-- 08. Delete Employees and Departments
+
+begin transaction
+
+declare @delTargets Table(
+	[Id] int, 
+	[Name] nvarchar(max), 
+	[DepartmentID] int);
+
+insert into @delTargets 
+	select e.[EmployeeID], d.[Name], d.[DepartmentID] 
+	from Employees as e
+		inner join [Departments] as d
+		on e.[DepartmentID] = d.[DepartmentID]
+	where d.[Name] in ('Production','Production Control')
+
+alter table dbo.Departments
+alter column [ManagerID] int null
+
+delete from EmployeesProjects
+where [EmployeeID] in (select [Id] from @delTargets)
+					  
+update Employees set [ManagerID] = NULL
+where [ManagerID] in (select [Id] from @delTargets)
+
+update Departments set [ManagerID] = NULL
+where [ManagerID] in (select [Id] from @delTargets)
+
+delete from Employees
+where [DepartmentID] in (select [DepartmentID] from @delTargets)
+
+delete from dbo.Departments
+where [Name] in (select [Name] from @delTargets)
+
+rollback
+
+
 
 
 
