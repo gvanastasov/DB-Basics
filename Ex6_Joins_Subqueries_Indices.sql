@@ -159,8 +159,20 @@ where cnt.[ContinentName] = 'Africa'
 order by c.[CountryName] asc
 
 
+-- 15. Continents and Currencies
 
-
+-- grouping solution
+select [ContinentCode], [CurrencyCode], [CurrencyUsage] from (
+	select ctr.[ContinentCode], 
+		   ctr.[CurrencyCode],
+		   Count(ctr.[CurrencyCode]) as [CurrencyUsage],
+		   DENSE_RANK() 
+				OVER(PARTITION BY ctr.[ContinentCode]
+					 ORDER BY Count(ctr.[CurrencyCode]) desc) as [UsageRank]
+	from Countries as ctr
+	group by ctr.[CurrencyCode], ctr.[ContinentCode]
+	having Count(ctr.[CurrencyCode]) > 1) as filtered
+where [UsageRank] = 1
 
 
 
