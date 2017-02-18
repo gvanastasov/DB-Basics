@@ -70,11 +70,22 @@ go
 select [Salary], 
 	   dbo.ufn_GetSalaryLevel([Salary]) as [Salary Level]
   from Employees
+go
+-- 06. Employees by Salary Level
+
+create procedure usp_EmployeesBySalaryLevel
+	@salaryLevel as nvarchar(max)
+as
+	select [FirstName], 
+		   [LastName]
+      from Employees
+	 where dbo.ufn_GetSalaryLevel([Salary]) = @salaryLevel
+go
+
+exec dbo.usp_EmployeesBySalaryLevel @salaryLevel='high'
 
 
-
-
-
+-- 07. Define Function
 
 
 
