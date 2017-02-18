@@ -211,9 +211,32 @@ order by [HighestPeakElevation] desc,
 		 [CountryName] asc
 
 
+-- 18. Highest Peak Name and Elevation by Country
 
+select top(5)
+		ctr.[CountryName],
+		ISNULL(pms.[PeakName], '(no highest peak)') as [HighestPeakName],
+		ISNULL(pks.[HighestPeakElevation], 0) as [HighestPeakElevation],
+		ISNULL(pms.[MountainRange], '(no mountain)') as [Mountain]
+from 
+		 Countries as ctr
+     
+		 left join (
+			select mc.[CountryCode],
+					MAX([Elevation]) as [HighestPeakElevation]
+			from Peaks as p
+				 inner join MountainsCountries as mc 
+						 on p.[MountainId] = mc.[MountainId]
+			group by mc.[CountryCode]
+		 ) as pks on ctr.[CountryCode] = pks.[CountryCode]
 
+		 left join (
+			select p.[PeakName], p.[Elevation], m.[MountainRange]
+			from Peaks as p
+			inner join Mountains as m on p.[MountainId] = m.[Id]
+		 ) pms on pms.[Elevation] = pks.[HighestPeakElevation]
 
+order by ctr.[CountryName], pms.[PeakName]
 
 
 
