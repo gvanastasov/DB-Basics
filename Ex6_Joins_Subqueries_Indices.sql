@@ -105,6 +105,18 @@ order by e.[EmployeeID] asc
 
 
 
+-- 10. Employee Summary
+
+select top(50) e.[EmployeeID],
+		e.[FirstName] + ' ' + e.[LastName] as [EmployeeName],
+		m.[FirstName] + ' ' + m.[LastName] as [ManagerName],
+		d.[Name] as [DepartmentName]
+from Employees as e
+join Employees as m on m.[EmployeeID] = e.[ManagerID]
+join Departments as d on d.[DepartmentID] = e.[DepartmentID]
+order by e.[EmployeeID]
+
+
 
 
 
