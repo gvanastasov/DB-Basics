@@ -51,6 +51,18 @@ where p.ProjectID is null
 order by e.[EmployeeID]
 
 
+-- 06. Employees Hired After
+
+select [FirstName], 
+		[LastName], 
+		[HireDate], 
+		d.[Name] as [DeptName]
+from Employees as e
+inner join Departments as d on d.[DepartmentID] = e.[DepartmentID]
+where DATEDIFF(day, '1/1/1999', [HireDate]) > 0
+	  and d.[Name] in ('Sales', 'Finance')
+order by e.[HireDate] asc
+ 
 
 
 
