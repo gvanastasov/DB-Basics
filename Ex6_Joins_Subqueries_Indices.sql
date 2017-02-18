@@ -44,7 +44,11 @@ order by e.[DepartmentID] asc
 
 -- 05. Employees without project
 
-
+select top(3) e.[EmployeeID], [FirstName], p.[ProjectID]
+from Employees as e
+left join EmployeesProjects as p on p.[EmployeeID] = e.[EmployeeID]
+where p.ProjectID is null
+order by e.[EmployeeID]
 
 
 
