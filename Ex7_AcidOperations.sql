@@ -250,6 +250,50 @@ go
 
 
 
+-- 13. Calculating Interest
+
+create procedure usp_CalculateFutureValueForAccount
+	@accountId int,
+	@interestRate float
+as
+	begin
+		select acc.[Id] as [Account Id],
+				ah.[FirstName] as [First Name],
+				ah.[LastName] as [Last Name],
+				acc.[Balance] as [Current Balance],
+				dbo.ufn_CalculateFutureValue(acc.[Balance], @interestRate, 5) as [Balance in 5 years]
+		from AccountHolders as ah
+		inner join Accounts as acc on ah.[Id] = acc.[AccountHolderId]
+		where acc.[Id] = @accountId
+	end
+go
+
+exec dbo.usp_CalculateFutureValueForAccount @accountId = 1, @interestRate = 0.1
+go
+
+
+
+-- 14. Deposit Money Procedure
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
