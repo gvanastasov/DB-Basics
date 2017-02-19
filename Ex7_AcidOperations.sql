@@ -213,27 +213,39 @@ go
 
 -- 11. People with Balance Higher Than
 
-create procedure usp_GetHoldersWithBalanceHigherThan
-	@tresshold money
+create PROCEDURE usp_GetHoldersWithBalanceHigherThan
+(
+	@sum MONEY
+)
+AS
+BEGIN 
+	SELECT FirstName AS [First Name], LastName AS [Last Name] FROM
+	(
+		SELECT FirstName, LastName, SUM(a.Balance) AS TotalBalance FROM AccountHolders AS ah
+		JOIN Accounts AS a
+		ON a.AccountHolderId = ah.Id
+		GROUP BY ah.FirstName, ah.LastName
+	) AS tb
+	WHERE tb.TotalBalance > @sum
+END
+
+exec dbo.usp_GetHoldersWithBalanceHigherThan @sum=15000
+go
+-- 12. Future Value Function
+
+create function ufn_CalculateFutureValue(
+	@sum money, @yearlyInterestRate float, @years int)
+returns money
 as
 	begin
-		select [FirstName], [LastName]
-			from AccountHolders as h
-			inner join (
-				select [AccountHolderId], 
-				       sum([Balance]) as [TotalBalance] 
-				from Accounts
-				group by [AccountHolderId]
-			) as a on h.[Id] = a.[AccountHolderId]
-		where a.[TotalBalance] > @tresshold
+		declare @futureValue money;
+		set @futureValue = @sum * POWER((1+@yearlyInterestRate), @years);
+		return @futureValue;
 	end
 go
 
-exec dbo.usp_GetHoldersWithBalanceHigherThan @tresshold=30000
-
-
-
-
+select dbo.ufn_CalculateFutureValue(1000, 0.1, 5)
+go
 
 
 
