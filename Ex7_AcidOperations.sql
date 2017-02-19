@@ -1,3 +1,7 @@
+-----------------------------------
+-- PART I
+-----------------------------------
+
 USE SoftUni
 GO
 
@@ -187,8 +191,24 @@ exec dbo.usp_AssignProject @employeeId=2, @projectId=5
 
 delete from [EmployeesProjects]
 where [EmployeeID] = 2
+go
+-----------------------------------
+-- PART II
+-----------------------------------
+use Bank
+go
 
+-- 10. Find Full Name
 
+create procedure usp_GetHoldersFullName
+as
+	begin
+		select CONCAT([FirstName],' ',[LastName]) as [Full Name]
+		from AccountHolders
+	end
+go
+
+exec dbo.usp_GetHoldersFullName
 
 
 
