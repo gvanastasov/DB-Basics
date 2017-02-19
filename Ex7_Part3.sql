@@ -64,7 +64,7 @@ as
 
 		select @userLevel = [Level]
 		from UsersGames
-		where [Id] = @userGameId
+		where [GameId] = @userGameId
 
 		select @itemLevel = [MinLevel],
 				@itemPrice = [Price]
@@ -80,7 +80,7 @@ as
 				values (@itemId, @userGameId)
 
 				update UsersGames set [Cash] -= @itemPrice
-				where [Id] = @userGameId
+				where [GameId] = @userGameId
 
 			end
 		else
@@ -95,9 +95,74 @@ where [ItemId] = 6 and [UserGameId] = 212
 insert into UserGameItems
 values (6, 212)
 
+while LEN(@word) > 0
+			begin
+			set @letter = LEFT(@word,1);
+			if CHARINDEX(@letter, @setOfLetters) = 0
+				return 0;
+			set @word = RIGHT(@word, LEN(@word) - 1);
+			end
+
+-- 21. Massive Shopping
+
+declare @gameId int, @sum1 money, @sum2 money
+
+select @gameId = usg.[Id]
+	from UsersGames as usg
+	join Games as g 
+		on usg.[GameId] = g.[Id]
+	where g.[Name] = 'Safflower'
+
+set @sum1 = (SELECT SUM(i.Price)
+			FROM Items i
+			WHERE MinLevel BETWEEN 11 AND 12)
+set @sum2 = (SELECT SUM(i.Price)
+			FROM Items i
+			WHERE MinLevel BETWEEN 19 AND 21)
+
+begin transaction
+IF (SELECT Cash FROM UsersGames WHERE Id = @gameId) < @sum1
+	ROLLBACK
+ELSE 
+	BEGIN
+		UPDATE UsersGames
+		SET Cash = Cash - @sum1
+		WHERE Id = @gameId
+
+		INSERT INTO UserGameItems (UserGameId, ItemId)
+		SELECT @gameId, Id 
+		FROM Items 
+		WHERE MinLevel BETWEEN 11 AND 12
+
+		COMMIT
+	END
+
+begin transaction
+
+IF (SELECT Cash FROM UsersGames WHERE Id = @gameId) < @sum2
+	ROLLBACK
+ELSE 
+	BEGIN
+		UPDATE UsersGames
+		SET Cash = Cash - @sum2
+		WHERE Id = @gameId
+
+		INSERT INTO UserGameItems (UserGameId, ItemId)
+		SELECT @gameId, Id 
+		FROM Items 
+		WHERE MinLevel BETWEEN 19 AND 21
+		COMMIT
+	END
+
+SELECT i.Name AS 'Item Name' 
+FROM UserGameItems ugi
+JOIN Items i
+ON ugi.ItemId = i.Id
+WHERE ugi.UserGameId = @gameId
+
+-- 22. Number of Users for Email Provider
 
 
---
 
 
 
