@@ -209,7 +209,27 @@ as
 go
 
 exec dbo.usp_GetHoldersFullName
+go
 
+-- 11. People with Balance Higher Than
+
+create procedure usp_GetHoldersWithBalanceHigherThan
+	@tresshold money
+as
+	begin
+		select [FirstName], [LastName]
+			from AccountHolders as h
+			inner join (
+				select [AccountHolderId], 
+				       sum([Balance]) as [TotalBalance] 
+				from Accounts
+				group by [AccountHolderId]
+			) as a on h.[Id] = a.[AccountHolderId]
+		where a.[TotalBalance] > @tresshold
+	end
+go
+
+exec dbo.usp_GetHoldersWithBalanceHigherThan @tresshold=30000
 
 
 
