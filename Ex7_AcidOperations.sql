@@ -421,11 +421,51 @@ raiserror (@log, 0, 0) with nowait
 rollback
 
 
--- 
+-- 18. Create Table Emails
 
+create table NotificationEmails(
+	[Id] int primary key identity(1,1),
+	[Recipient] int not null,
+	[Subject] nvarchar(200) not null,
+	[Body] nvarchar (200) not null
+)
+go
 
+create trigger tr_Newlog on Logs after INSERT
+as
+	begin
+		declare @recipientId int,
+				@accountId int,
+				@old money,
+		        @new money;
+		
+		select @accountId = [AccountId],
+				@old = [OldSum],
+				@new = [NewSum]
+		from inserted
 
+		set @recipientId = (select [AccountHolderId] 
+							from Accounts
+							where [Id] = @accountId);
 
+		insert into NotificationEmails values
+		(
+			@recipientId,
+			Concat('Balance change for account: ',@accountId),
+			Concat('On ',CAST(GETDATE() AS nvarchar(30)),
+				   ' your balance was changed from ',CAST(@old as nvarchar(max)),
+				   ' to ',CAST(@new as nvarchar(max)))
+		)
+	end
+go
+
+exec dbo.usp_WithdrawMoney @accountId = 1, @amount = 15.09
+exec dbo.usp_DepositMoney @accountId = 1, @amount = 15.09
+
+select [Balance] 
+			from Accounts 
+			where [Id] = 1
+go
 
 
 
