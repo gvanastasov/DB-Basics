@@ -304,9 +304,45 @@ as
 		else
 			commit
 	end
+go
 
+-- 15. Withdraw Money
 
+create procedure usp_WithdrawMoney
+	@accountId int,
+	@amount money
+as
+	begin
 
+		declare @currentBalance money = (select [Balance] 
+										  from Accounts
+										  where [Id] = @accountId);
+		declare @expectedBalance money = @currentBalance - @amount;
+
+		begin transaction
+
+		update Accounts set [Balance] -= @amount
+		where [Id] = @accountId
+
+		set @currentBalance = (select [Balance] 
+								from Accounts
+								where [Id] = @accountId);
+		if @currentBalance < 0
+			begin
+				raiserror('Insufficient money', 16, 1);
+				rollback;
+				return;
+			end
+		else if(@currentBalance <> @expectedBalance)
+			begin
+				raiserror('Balance changed due transaction time!', 16, 1);
+				rollback;
+				return;
+			end
+		else
+			commit
+	end
+go
 
 
 
