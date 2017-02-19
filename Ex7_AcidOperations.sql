@@ -146,7 +146,47 @@ delete from dbo.Departments
 where [Name] in (select [Name] from @delTargets)
 
 rollback
+go
 
+-- 09. Employees with Three Projects
+
+create procedure usp_AssignProject
+	@employeeId int,
+	@projectId int
+as
+	begin
+		
+		declare @currentProjCount int;
+		set @currentProjCount = (select count(*) 
+								from EmployeesProjects
+								where [EmployeeID] = @employeeId);
+
+		begin transaction
+
+
+		if @currentProjCount >= 3
+			begin
+				raiserror('The employee has too many projects!', 16, 1);
+				rollback;
+				return;
+			end
+
+		insert into EmployeesProjects ([EmployeeID], [ProjectID])
+		values (@employeeId, @projectId)
+		commit;
+	end
+
+go
+
+exec dbo.usp_AssignProject @employeeId=2, @projectId=1
+exec dbo.usp_AssignProject @employeeId=2, @projectId=2
+exec dbo.usp_AssignProject @employeeId=2, @projectId=3
+-- next will throw exception
+exec dbo.usp_AssignProject @employeeId=2, @projectId=4
+exec dbo.usp_AssignProject @employeeId=2, @projectId=5
+
+delete from [EmployeesProjects]
+where [EmployeeID] = 2
 
 
 
