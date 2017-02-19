@@ -280,29 +280,10 @@ create procedure usp_DepositMoney
 	@amount money
 as
 	begin
-
-		declare @currentBalance money = (select [Balance] 
-										  from Accounts
-										  where [Id] = @accountId);
-		declare @expectedBalance money = @currentBalance + @amount;
-
 		begin transaction
-
-		update Accounts set [Balance] += @amount
-		where [Id] = @accountId
-
-		set @currentBalance = (select [Balance] 
-								from Accounts
-								where [Id] = @accountId);
-
-		if(@currentBalance <> @expectedBalance)
-			begin
-				raiserror('Balance changed due transaction time!', 16, 1);
-				rollback;
-				return;
-			end
-		else
-			commit
+			update Accounts set [Balance] += @amount
+			where [Id] = @accountId
+		commit
 	end
 go
 
@@ -313,38 +294,55 @@ create procedure usp_WithdrawMoney
 	@amount money
 as
 	begin
-
-		declare @currentBalance money = (select [Balance] 
-										  from Accounts
-										  where [Id] = @accountId);
-		declare @expectedBalance money = @currentBalance - @amount;
-
 		begin transaction
-
-		update Accounts set [Balance] -= @amount
-		where [Id] = @accountId
-
-		set @currentBalance = (select [Balance] 
-								from Accounts
-								where [Id] = @accountId);
-		if @currentBalance < 0
-			begin
-				raiserror('Insufficient money', 16, 1);
-				rollback;
-				return;
-			end
-		else if(@currentBalance <> @expectedBalance)
-			begin
-				raiserror('Balance changed due transaction time!', 16, 1);
-				rollback;
-				return;
-			end
-		else
-			commit
+			update Accounts set [Balance] -= @amount
+			where [Id] = @accountId
+		commit
 	end
 go
 
 
+
+
+-- 16. Money Transfer
+
+create procedure usp_TransferMoney
+	@senderId int,
+	@receiverId int,
+	@amount money
+as
+	begin
+		
+		declare @senderBalance money = (select [Balance]
+										from Accounts
+										where [Id] = @senderId);
+
+		declare @receiverBalance money = (select [Balance]
+										  from Accounts
+										  where [Id] = @receiverId);
+		
+		declare @expectedSenderBalance money = @senderBalance - @amount;
+		declare @expectedReceiverBalance money = @receiverBalance + @amount;
+
+		begin transaction
+
+		update Accounts set [Balance] -= @amount
+		where [Id] = @senderId
+
+		update Accounts set [Balance] += @amount
+		where [Id] = @receiverId
+
+		set @senderBalance = (select [Balance]
+							  from Accounts
+							  where [Id] = @senderId);
+
+		set @receiverBalance = (select [Balance]
+								from Accounts
+								where [Id] = @receiverId);
+
+		if(
+
+	end
 
 
 
