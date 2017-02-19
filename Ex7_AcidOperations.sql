@@ -275,6 +275,35 @@ go
 
 -- 14. Deposit Money Procedure
 
+create procedure usp_DepositMoney
+	@accountId int,
+	@amount money
+as
+	begin
+
+		declare @currentBalance money = (select [Balance] 
+										  from Accounts
+										  where [Id] = @accountId);
+		declare @expectedBalance money = @currentBalance + @amount;
+
+		begin transaction
+
+		update Accounts set [Balance] += @amount
+		where [Id] = @accountId
+
+		set @currentBalance = (select [Balance] 
+								from Accounts
+								where [Id] = @accountId);
+
+		if(@currentBalance <> @expectedBalance)
+			begin
+				raiserror('Balance changed due transaction time!', 16, 1);
+				rollback;
+				return;
+			end
+		else
+			commit
+	end
 
 
 
