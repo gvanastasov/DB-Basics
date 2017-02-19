@@ -340,9 +340,98 @@ as
 								from Accounts
 								where [Id] = @receiverId);
 
-		if(
+		if(@expectedSenderBalance <> @senderBalance)
+			begin
+				raiserror('Sender''s Balance changed in due transaction time', 16, 1);
+				rollback;
+				return;
+			end
+		else if(@expectedReceiverBalance <> @receiverBalance)
+			begin
+				raiserror('Receiver''s Balance changed in due transaction time', 16, 1);
+				rollback;
+				return;
+			end
+		else if(@senderBalance < 0)
+			begin
+				raiserror('Sender has less money than amount', 16, 1);
+				rollback;
+				return;
+			end
+		else
+			commit
 
 	end
+
+
+-- 17. Create Table logs
+
+create table Logs(
+	[LogId] int primary key identity(1,1),
+	[AccountId] int not null,
+	[OldSum] money default(0.00),
+	[NewSum] money default(0.00)
+)
+go
+
+create trigger tr_AccountsUpdate on Accounts instead of UPDATE
+as
+	begin
+		declare @id int,
+				@accountHolderId int,
+		        @currentBalance money,
+				@newBalance money;
+
+		select @id = inserted.[Id],
+				@accountHolderId = inserted.[AccountHolderId],
+				@newBalance = inserted.[Balance] 
+		from inserted
+
+		set @currentBalance = (select [Balance] from Accounts
+								where [Id] = @id)
+
+		update Accounts 
+		set [AccountHolderId] = @accountHolderId,
+		    [Balance] = @newBalance
+		where [id] = @id;
+
+		insert into Logs values (@id, @currentBalance, @newBalance)
+	end 
+
+-- testing transaction
+begin transaction
+declare @t nvarchar(max) = (select [Balance] 
+						    from Accounts 
+							where [Id] = 1);
+raiserror (@t, 0, 0) with nowait
+
+exec dbo.usp_WithdrawMoney @accountId = 1, @amount = 15.09
+
+set @t = (select [Balance] 
+			from Accounts 
+			where [Id] = 1);
+raiserror (@t, 0, 0) with nowait
+
+declare @log nvarchar(max);
+select @log = Cast([LogId] as nvarchar(max)) + ' ' + 
+					Cast([AccountId] as nvarchar(max)) + ' ' + 
+					Cast([OldSum] as nvarchar(max)) + ' ' + 
+					Cast([NewSum] as nvarchar(max)) from Logs
+raiserror (@log, 0, 0) with nowait
+rollback
+
+
+-- 
+
+
+
+
+
+
+
+
+
+
 
 
 
